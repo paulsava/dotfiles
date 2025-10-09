@@ -1,0 +1,8 @@
+[user]
+	name = pau94516
+	email = paul-andrei.sava@aisec.fraunhofer.de
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

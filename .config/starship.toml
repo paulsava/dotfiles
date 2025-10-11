@@ -1,24 +1,51 @@
-# Minimal Omarchy-style prompt
+# A more informative, two-line prompt with icons.
 format = """
+[](fg:#6C7086)\
 $directory\
 $git_branch\
 $git_status\
+[](fg:#6C7086)\
+$python\
+$cmd_duration
 $character
 """
 
 [directory]
+style = "bold cyan"
+read_only = " " # Icon for read-only folders
+# Keep your truncation settings
 truncation_length = 3
 truncate_to_repo = true
-style = "bold cyan"
 
 [git_branch]
-format = "[$symbol$branch]($style) "
+symbol = " " # Git branch icon
 style = "bold purple"
-symbol = " "
+format = "[$symbol$branch]($style)"
 
 [git_status]
-format = "([$all_status$ahead_behind]($style) )"
-style = "bold red"
+style = "bold yellow"
+format = "[$all_status$ahead_behind]($style)"
+# More informative symbols for git status
+conflicted = "="
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇕"
+untracked = "?"
+stashed = "$"
+modified = "!"
+staged = "+"
+renamed = "»"
+deleted = "✘"
+
+[python]
+symbol = "󰌠 " # Python icon
+style = "bold green"
+format = "via [$symbol$version]($style) "
+
+[cmd_duration]
+min_time = 500 # Only show if command takes > 500ms
+style = "bold yellow"
+format = "took [$duration]($style) "
 
 [character]
 success_symbol = "[❯](bold green)"

@@ -44,10 +44,20 @@ return require("packer").startup(function(use)
 	})
 
 	use("theprimeagen/harpoon")
+	use("theprimeagen/vim-be-good")
 	use("mbbill/undotree")
 	use("tpope/vim-fugitive")
 	use("stevearc/conform.nvim") -- Formatter
 	use("mfussenegger/nvim-lint") -- Linter
-
 	use("folke/which-key.nvim")
+
+	use({
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		requires = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- A dependency for file icons
+			"MunifTanjim/nui.nvim",
+		},
+	})
 end)

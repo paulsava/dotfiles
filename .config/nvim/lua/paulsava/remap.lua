@@ -70,3 +70,6 @@ end, { desc = "Harpoon: Navigate to file 7" })
 vim.keymap.set("n", "<C-8>", function()
 	ui.nav_file(8)
 end, { desc = "Harpoon: Navigate to file 8" })
+
+-- File Explorer
+vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Explorer" })

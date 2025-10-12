@@ -1,52 +1,52 @@
-# A more informative, two-line prompt with icons.
+# ~/.config/starship.toml
+
+# A minimalist, multi-line prompt
+add_newline = true
+
+# The master layout for the prompt. Each module name is prefixed with '$'.
+# This format string is what creates the powerline look.
 format = """
-[](fg:#6C7086)\
 $directory\
 $git_branch\
 $git_status\
-[](fg:#6C7086)\
-$python\
-$cmd_duration
-$character
-"""
+$time\
+$line_break\
+$character"""
+
+# Timeout for commands in modules like 'cmd_duration'
+command_timeout = 1000
 
 [directory]
-style = "bold cyan"
-read_only = " " # Icon for read-only folders
-# Keep your truncation settings
+style = "bg:#f5c2e7 fg:#24273a" # Pink background
+format = "[](fg:#f5c2e7)[  $path ](bold $style)[](fg:#f5c2e7) "
 truncation_length = 3
-truncate_to_repo = true
+truncation_symbol = "…/"
 
 [git_branch]
-symbol = " " # Git branch icon
-style = "bold purple"
-format = "[$symbol$branch]($style)"
+symbol = ""
+style = "bg:#a6e3a1 fg:#24273a" # Green background
+format = '[](fg:#a6e3a1)[ $symbol $branch ](bold $style)[](fg:#a6e3a1) '
 
 [git_status]
-style = "bold yellow"
-format = "[$all_status$ahead_behind]($style)"
-# More informative symbols for git status
-conflicted = "="
-ahead = "⇡"
-behind = "⇣"
-diverged = "⇕"
-untracked = "?"
-stashed = "$"
-modified = "!"
-staged = "+"
-renamed = "»"
-deleted = "✘"
+style = "bg:#a6e3a1 fg:#24273a" # Green background
+format = '([\[$all_status$ahead_behind\]]($style)) '
+conflicted = "🏳"
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked = ""
+stashed = ""
+modified = ""
+staged = '[ ](fg:#eed49f)'
+renamed = ""
+deleted = ""
 
-[python]
-symbol = "󰌠 " # Python icon
-style = "bold green"
-format = "via [$symbol$version]($style) "
-
-[cmd_duration]
-min_time = 500 # Only show if command takes > 500ms
-style = "bold yellow"
-format = "took [$duration]($style) "
+[time]
+disabled = false
+time_format = "%R" # 24-hour format like 16:44
+style = "bg:#fab387 fg:#24273a" # Peach background
+format = '[](fg:#fab387)[  $time ](bold $style)[](fg:#fab387)'
 
 [character]
-success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+success_symbol = "[❯](bold fg:#a6da95)" # Green arrow for success
+error_symbol = "[❯](bold fg:#ed8796)" # Red arrow for error

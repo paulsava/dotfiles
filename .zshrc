@@ -5,6 +5,8 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt SHARE_HISTORY
 
+alias dotgit='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
 # ===== Modern CLI Tools =====
 
 # eza (better ls)
@@ -34,20 +36,7 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border --preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 alias ff="fzf --preview 'bat --color=always {}'"
 
-# zsh-autosuggestions and syntax highlighting (keep these, they're great)
-source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# History substring search (arrow key filtering)
-source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh
-
-# Bind arrow keys for history substring search
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-# thefuck
 eval $(thefuck --alias)
-
-# Starship prompt (minimal and fast)
-eval "$(starship init zsh)"
 
 # ===== Editor =====
 export EDITOR='nvim'
@@ -98,3 +87,24 @@ compinit
 
 # Case-insensitive completion
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+eval "$(starship init zsh)"
+
+
+export FZF_CTRL_R_OPTS="--preview-window=hidden"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+fzf-history-widget-up() {
+  # If the buffer is not empty, trigger fzf
+  if [[ -n "$LBUFFER" ]]; then
+    zle fzf-history-widget
+  # Otherwise, fall back to the normal Up Arrow behavior
+  else
+    zle up-line-or-history
+  fi
+}
+zle -N fzf-history-widget-up
+
+# Bind the Up Arrow key to our new custom widget
+bindkey '^[[A' fzf-history-widget-up

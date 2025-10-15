@@ -7,38 +7,47 @@ setopt SHARE_HISTORY
 alias dotgit='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
 # ===== Modern CLI Tools =====
-# eza (better ls)
 alias ls="eza --icons=always --group-directories-first"
 alias ll="eza -l --icons=always --group-directories-first"
 alias la="eza -la --icons=always --group-directories-first"
 alias lt="eza --tree --level=2 --icons=always"
 alias l="eza -1 --icons=always"
 
-# bat (better cat)
-alias cat="bat --style=auto"
-
-# fd (better find)
-alias find="fd"
-
-# ripgrep (better grep)
-alias grep="rg"
+alias cat="bat --style=auto"   # bat
+alias find="fd"                 # fd
+alias grep="rg"                 # ripgrep
 
 # zoxide (better cd)
 eval "$(zoxide init zsh)"
 alias cd="z"
 
 # ===== fzf (fuzzy finder) =====
-# Defaults: no preview globally; add preview only for Ctrl-T (file picker)
+# Global defaults: no preview for generic pickers
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS="--height 40% --layout=reverse --border"
+# Nice preview only for file picker; never for history
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 export FZF_CTRL_R_OPTS="--no-preview --preview-window=hidden"
 
-# Load upstream fzf integration (defines fzf-history-widget, etc.)
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Load fzf integration from whichever install exists (works on macOS Homebrew & Linux)
+for f in \
+  "$HOME/.fzf.zsh" \
+  "$(command -v brew >/dev/null 2>&1 && brew --prefix 2>/dev/null)/opt/fzf/shell/key-bindings.zsh" \
+  /usr/share/fzf/key-bindings.zsh \
+  /usr/share/doc/fzf/examples/key-bindings.zsh
+do
+  [ -f "$f" ] && source "$f" && break
+done
+for f in \
+  "$(command -v brew >/dev/null 2>&1 && brew --prefix 2>/dev/null)/opt/fzf/shell/completion.zsh" \
+  /usr/share/fzf/completion.zsh \
+  /usr/share/doc/fzf/examples/completion.zsh
+do
+  [ -f "$f" ] && source "$f" && break
+done
 
-# --- Fallback: if the upstream history widget didn't load, define our own ---
+# Fallback: if upstream didn't define the history widget, provide our own
 if ! zle -l | grep -qx 'fzf-history-widget'; then
   _fzf_hist_impl() {
     local picker selected
@@ -74,18 +83,17 @@ zle -N fzf-history-widget-up
 bindkey -v
 export KEYTIMEOUT=1
 
-# Bind Up using terminfo so it works inside/outside tmux (vi insert & command)
+# Bind Up across environments:
+# - use terminfo sequence if available
+# - also bind common CSI variants so it works in Ghostty/iTerm/Alacritty and inside tmux
 zmodload zsh/terminfo 2>/dev/null || true
-if [[ -n ${terminfo[kcuu1]} ]]; then
-  bindkey -M viins "${terminfo[kcuu1]}" fzf-history-widget-up
-  bindkey -M vicmd "${terminfo[kcuu1]}" fzf-history-widget-up
-else
-  # fallbacks if terminfo missing
-  bindkey -M viins '^[[A'  fzf-history-widget-up
-  bindkey -M viins '^[OA'  fzf-history-widget-up
-  bindkey -M vicmd '^[[A'  fzf-history-widget-up
-  bindkey -M vicmd '^[OA'  fzf-history-widget-up
-fi
+typeset -a __UP_SEQS
+[[ -n ${terminfo[kcuu1]} ]] && __UP_SEQS+=("${terminfo[kcuu1]}")
+__UP_SEQS+=('^[[A' '^[OA')
+for seq in "${__UP_SEQS[@]}"; do
+  bindkey -M viins "$seq" fzf-history-widget-up
+  bindkey -M vicmd "$seq" fzf-history-widget-up
+done
 
 # thefuck
 eval "$(thefuck --alias)"
@@ -113,19 +121,13 @@ alias gco="git checkout"
 alias gb="git branch"
 alias glog="git log --oneline --graph --decorate"
 
-# ===== Paths (safe no-ops in container) =====
+# ===== Paths (safe on macOS; no-ops in container) =====
 export PATH="$PATH:/Users/pau94516/.lmstudio/bin"
-if [ -f '/Users/pau94516/google-cloud-sdk/path.zsh.inc' ]; then
-  . '/Users/pau94516/google-cloud-sdk/path.zsh.inc'
-fi
-if [ -f '/Users/pau94516/google-cloud-sdk/completion.zsh.inc' ]; then
-  . '/Users/pau94516/google-cloud-sdk/completion.zsh.inc'
-fi
+[ -f '/Users/pau94516/google-cloud-sdk/path.zsh.inc' ] && . '/Users/pau94516/google-cloud-sdk/path.zsh.inc'
+[ -f '/Users/pau94516/google-cloud-sdk/completion.zsh.inc' ] && . '/Users/pau94516/google-cloud-sdk/completion.zsh.inc'
 
 # Local bin
-if [ -f "$HOME/.local/bin/env" ]; then
-  source "$HOME/.local/bin/env"
-fi
+[ -f "$HOME/.local/bin/env" ] && source "$HOME/.local/bin/env"
 
 # XDG
 export XDG_CONFIG_HOME="$HOME/.config"

@@ -1,4 +1,4 @@
-vim.opt.guicursor =""
+vim.opt.guicursor = ""
 
 vim.opt.nu = true
 vim.opt.relativenumber = true
@@ -25,3 +25,6 @@ vim.opt.backup = false
 vim.opt.scrolloff = 8
 
 vim.opt.colorcolumn = "80"
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1

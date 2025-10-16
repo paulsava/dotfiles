@@ -8,9 +8,6 @@ vim.keymap.set({ "n", "v" }, "<leader>f", function()
 	require("conform").format({ async = true, lsp_fallback = true })
 end, { desc = "Format" })
 
--- Harpoon: Add file
-vim.keymap.set("n", "<leader>a", require("harpoon.mark").add_file, { desc = "Harpoon: Add file" })
-
 -- Undo Tree
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle, { desc = "Undo Tree" })
 
@@ -41,35 +38,26 @@ vim.keymap.set("n", "<leader>ca", function()
 end, { desc = "Code Action" })
 
 ------------------------------------------------------------------
--- Non-leader keymaps (Harpoon Navigation, etc.)
+-- Harpoon Navigation, etc.
 ------------------------------------------------------------------
+local mark = require("harpoon.mark")
 local ui = require("harpoon.ui")
-vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu, { desc = "Harpoon: Quick menu" })
 
-vim.keymap.set("n", "<C-1>", function()
+vim.keymap.set("n", "<leader>a", mark.add_file, { desc = "Harpoon: Add file" })
+vim.keymap.set("n", "<leader>e", ui.toggle_quick_menu, { desc = "Harpoon: Quick menu" })
+
+vim.keymap.set("n", "<leader>1", function()
 	ui.nav_file(1)
 end, { desc = "Harpoon: Navigate to file 1" })
-vim.keymap.set("n", "<C-2>", function()
+vim.keymap.set("n", "<leader>2", function()
 	ui.nav_file(2)
 end, { desc = "Harpoon: Navigate to file 2" })
-vim.keymap.set("n", "<C-3>", function()
+vim.keymap.set("n", "<leader>3", function()
 	ui.nav_file(3)
 end, { desc = "Harpoon: Navigate to file 3" })
-vim.keymap.set("n", "<C-4>", function()
+vim.keymap.set("n", "<leader>4", function()
 	ui.nav_file(4)
 end, { desc = "Harpoon: Navigate to file 4" })
-vim.keymap.set("n", "<C-5>", function()
-	ui.nav_file(5)
-end, { desc = "Harpoon: Navigate to file 5" })
-vim.keymap.set("n", "<C-6>", function()
-	ui.nav_file(6)
-end, { desc = "Harpoon: Navigate to file 6" })
-vim.keymap.set("n", "<C-7>", function()
-	ui.nav_file(7)
-end, { desc = "Harpoon: Navigate to file 7" })
-vim.keymap.set("n", "<C-8>", function()
-	ui.nav_file(8)
-end, { desc = "Harpoon: Navigate to file 8" })
 
 -- File Explorer
 vim.keymap.set("n", "<leader>e", ":Neotree toggle<CR>", { desc = "Explorer" })
